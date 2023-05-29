@@ -1,19 +1,18 @@
-import {
-  View,
-  TextInput,
-  StatusBar,
-  Dimensions,
-  SafeAreaView,
-  useColorScheme,
-} from 'react-native';
 import React, { useState } from 'react';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-
-import Circle from "./src/components/Circle";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Dimensions, SafeAreaView, useColorScheme } from "react-native";
+
+import { Page, pageSelection } from "./src/types";
+import PageSelector from "./src/components/PageSelector";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import BouncingBall from "./src/screens/BouncingBall";
+
+const pages: Page[] = [
+  {name: "Bouncing ball"}
+]
 
 function App(): JSX.Element {
-  const [color, setColor] = useState("#0072a8");
+  const [selectedPage, setSelectedPage] = useState<pageSelection>("Bouncing ball");
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -22,28 +21,30 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const handlePageSelection = (selection: pageSelection) => {
+    setSelectedPage(selection);
+  }
+
+  const renderSelectedPage = () => {
+    switch (selectedPage) {
+      case "Bouncing ball":
+        return <BouncingBall backgroundStyle={backgroundStyle} />
+    }
+  }
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor}
+        {renderSelectedPage()}
+        <PageSelector
+          style={{
+            bottom: 0,
+            position: "absolute",
+          }}
+          pages={pages}
+          selectedPage={selectedPage}
+          onPageSelect={handlePageSelection}
         />
-        <View style={{
-          ...backgroundStyle,
-          display: "flex",
-        }}>
-          <Circle limits={{x: Dimensions.get("screen").width, y: Dimensions.get("screen").height}} radius={50}
-                  color={color}/>
-          <TextInput
-            style={{
-              marginLeft: 20,
-              marginBottom: 8,
-            }}
-            value={color}
-            onChangeText={setColor}>
-          </TextInput>
-        </View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );

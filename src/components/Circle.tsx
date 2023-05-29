@@ -4,7 +4,7 @@ import Animated, {
   withDecay,
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedGestureHandler,
+  useAnimatedGestureHandler, withSpring,
 } from "react-native-reanimated";
 import { PanGestureHandler } from "react-native-gesture-handler";
 
@@ -42,7 +42,7 @@ const Circle = (props: CircleProps) => {
         velocity: event.velocityX,
         clamp: [0, boundX]
       });
-      translateY.value = withDecay({
+      translateY.value = withSpring(translateY.value + 1 , {
         velocity: event.velocityY,
         clamp: [0, boundY]
       });
